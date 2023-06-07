@@ -1,9 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-
-const App = () => {
-    return <>React</>
-}
+import App from "./CodeMirrorExample"
 
 function render() {
     const container = document.getElementById("app")
