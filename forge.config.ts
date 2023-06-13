@@ -1,30 +1,48 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
-import { MakerSquirrel } from '@electron-forge/maker-squirrel';
-import { MakerZIP } from '@electron-forge/maker-zip';
-import { MakerDeb } from '@electron-forge/maker-deb';
-import { MakerRpm } from '@electron-forge/maker-rpm';
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';
+import type { Configuration } from 'webpack';
 
-import { mainConfig } from './webpack.main.config';
-import { rendererConfig } from './webpack.renderer.config';
+
+const webpackConfig = {
+  module: {
+    rules: [{
+      test: /\.tsx?$/,
+      exclude: /(node_modules|\.webpack)/,
+      use: {
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: true,
+        },
+      },
+    }]
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+  },
+}
 
 const config: ForgeConfig = {
   packagerConfig: {},
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [],
   plugins: [
     new WebpackPlugin({
-      mainConfig,
+      mainConfig: {
+        /**
+         * This is the main entry point for your application, it's the first file
+         * that runs in the main process.
+         */
+        entry: './src/index.ts',
+        // Put your normal webpack config below here
+        ...webpackConfig
+      },
       renderer: {
-        config: rendererConfig,
+        config: { ...webpackConfig },
         entryPoints: [
           {
-            html: './src/react/index.html',
-            js: './src/renderer.ts',
+            html: './src/index.html',
+            js: './src/renderer.tsx',
             name: 'main_window',
-            preload: {
-              js: './src/preload.ts',
-            },
           },
         ],
       },
