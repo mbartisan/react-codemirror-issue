@@ -1,6 +1,7 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';
 import type { Configuration } from 'webpack';
+import path from "path";
 
 
 const webpackConfig = {
@@ -18,6 +19,9 @@ const webpackConfig = {
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    alias: {
+      '@codemirror/state': path.resolve(__dirname, 'node_modules/@codemirror/state'),
+    }
   },
 }
 
